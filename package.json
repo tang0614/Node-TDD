@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
+    "lint": "eslint . --fix",
     "test": "jest --watch"
   },
   "author": "",
@@ -41,6 +42,7 @@
     }
   },
   "prettier":{
-    "singleQuote": true
+    "singleQuote": true,
+    "endOfLine": "lf"
   }
 }
