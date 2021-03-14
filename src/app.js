@@ -1,6 +1,9 @@
 const User = require('./user/User');
 const express = require('express');
 const app = express();
+const bcrypt = require('bcrypt');
+
+//a middleware function which recognizes the incoming Request Object as a JSON Object
 app.use(express.json());
 
 app.listen(3000, () =>
@@ -8,8 +11,12 @@ app.listen(3000, () =>
 );
 
 app.post('/api/1.0/users', (req, res) => {
-    User.create(req.body).then(() => {
-        return res.send({ message: 'User created' });
+    bcrypt.hash(req.body.password, 10).then((hash) => {
+        const user = { ...req.body, password: hash };
+
+        User.create(user).then(() => {
+            return res.send({ message: 'User created' });
+        });
     });
 });
 module.exports = app;

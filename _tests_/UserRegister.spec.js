@@ -4,11 +4,11 @@ const User = require('../src/user/User');
 const db = require('../src/config/db');
 
 beforeAll(() => {
-    return db.sync();
+    db.sync();
 });
 
 beforeEach(() => {
-    return User.destroy({ truncate: true });
+    User.destroy({ truncate: true });
 });
 
 describe('User registration', () => {
@@ -50,10 +50,26 @@ describe('User registration', () => {
             })
             .then(() => {
                 User.findAll().then((userList) => {
-                    console.log('userlist is', userList);
                     const savedUser = userList[0];
                     expect(savedUser.username).toBe('user1');
                     expect(savedUser.email).toBe('user1@gmail.com');
+                    done();
+                });
+            });
+    });
+
+    it('hashes the password in database', (done) => {
+        request(app)
+            .post('/api/1.0/users')
+            .send({
+                username: 'user1',
+                email: 'user1@mail.com',
+                password: 'P4ssword'
+            })
+            .then(() => {
+                User.findAll().then((userList) => {
+                    const savedUser = userList[0];
+                    expect(savedUser.password).not.toBe('P4ssword');
                     done();
                 });
             });
