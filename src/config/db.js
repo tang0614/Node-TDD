@@ -1,8 +1,15 @@
 const { Sequelize } = require('sequelize');
+const config = require('config');
+const dbConfig = config.get('database');
 
-const db = new Sequelize({
-    dialect: 'sqlite',
-    storage: 'path/to/database.sqlite'
-});
-
+const db = new Sequelize(
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
+    {
+        dialect: dbConfig.dialect,
+        storage: dbConfig.storage,
+        logging: dbConfig.logging
+    }
+);
 module.exports = db;

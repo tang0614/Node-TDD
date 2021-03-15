@@ -20,7 +20,7 @@ const User = db.define(
     {
         // Other model options go here
         db,
-        modelName: 'user'
+        modelName: 'users'
     }
 );
 
