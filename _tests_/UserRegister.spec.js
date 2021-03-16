@@ -75,4 +75,29 @@ describe('User registration', () => {
             'Username cannot be null'
         );
     });
+
+    it('returns E-mail cannot be null when email is null', async () => {
+        const response = await postUser({
+            username: 'user1',
+            email: null,
+            password: 'P4ssword'
+        });
+        const body = response.body;
+        expect(body.validationErrors.email).toBe(
+            'E-mail cannot be null'
+        );
+    });
+    it('returns errors for both when username and email is null', async () => {
+        const response = await postUser({
+            username: null,
+            email: null,
+            password: 'P4ssword'
+        });
+        const body = response.body;
+        // can use Object.keys here because keys are strings and they are stored in order
+        expect(Object.keys(body.validationErrors)).toEqual([
+            'username',
+            'email'
+        ]);
+    });
 });
