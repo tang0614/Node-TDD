@@ -2,41 +2,47 @@ const User = require('../user/User');
 const express = require('express');
 const router = express.Router();
 const userService = require('../service/userService');
+const { check, validationResult } = require('express-validator');
 
-const validateUsername = (req, next) => {
-    const user = req.body;
-    if (user.username === null) {
-        req.validationErrors = {
-            username: 'Username cannot be null'
-        };
-    }
-    next();
-};
+// const validateUsername = (req, next) => {
+//     const user = req.body;
+//     if (user.username === null) {
+//         req.validationErrors = {
+//             username: 'Username cannot be null'
+//         };
+//     }
+//     next();
+// };
 
-const validateEmail = (req, next) => {
-    const user = req.body;
-    if (user.email === null) {
-        req.validationErrors = {
-            ...req.validationErrors,
-            email: 'E-mail cannot be null'
-        };
-    }
-    next();
-};
+// const validateEmail = (req, next) => {
+//     const user = req.body;
+//     if (user.email === null) {
+//         req.validationErrors = {
+//             ...req.validationErrors,
+//             email: 'E-mail cannot be null'
+//         };
+//     }
+//     next();
+// };
 
 router.post(
     '/',
-    validateUsername,
-    validateEmail,
+    check('username')
+        .notEmpty()
+        .withMessage('Username cannot be null'),
+    check('email').notEmpty().withMessage('E-mail cannot be null'),
     async (req, res) => {
-        if (req.validationErrors) {
-            const response = {
-                validationErrors: { ...req.validationErrors }
-            };
-            return res.status(400).send(response);
+        const returned_errors = validationResult(req);
+        if (!returned_errors.isEmpty()) {
+            const validationErrors = {};
+            returned_errors.errors.forEach(
+                (error) => (validationErrors[error.param] = error.msg)
+            );
+            return res
+                .status(400)
+                .send({ validationErrors: validationErrors });
         }
         await userService.save(req.body);
-
         return res.send({ message: 'User created' });
     }
 );
