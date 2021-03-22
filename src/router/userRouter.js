@@ -57,8 +57,10 @@ router.post(
         .withMessage(
             'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'
         ),
+
     async (req, res) => {
         const returned_errors = validationResult(req);
+
         if (!returned_errors.isEmpty()) {
             const validationErrors = {};
             returned_errors.errors.forEach(
@@ -69,6 +71,7 @@ router.post(
                 .send({ validationErrors: validationErrors });
         }
         await userService.save(req.body);
+
         return res.send({ message: 'User created' });
     }
 );

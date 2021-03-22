@@ -157,4 +157,25 @@ describe('User registration', () => {
             'email'
         ]);
     });
+
+    it('creates an activationToken for user', async () => {
+        await postUser();
+        const users = await User.findAll();
+        const savedUser = users[0];
+        expect(savedUser.activationToken).toBeTruthy();
+    });
+
+    it('creates user in inactive mode', async () => {
+        await postUser();
+        const users = await User.findAll();
+        const savedUser = users[0];
+        expect(savedUser.inactive).toBe(1);
+    });
+    it('creates user in inactive mode even the request body contains inactive as false', async () => {
+        const newUser = { ...validUser, inactive: 0 };
+        await postUser(newUser);
+        const users = await User.findAll();
+        const savedUser = users[0];
+        expect(savedUser.inactive).toBe(1);
+    });
 });

@@ -15,12 +15,19 @@ const User = db.define(
         password: {
             type: DataTypes.STRING,
             unique: false
+        },
+        activationToken: {
+            type: DataTypes.STRING
+        },
+        inactive: {
+            type: DataTypes.INTEGER,
+            defaultValue: 1
         }
     },
     {
         // Other model options go here
         db,
-        modelName: 'users'
+        modelName: 'userTable'
     }
 );
 
